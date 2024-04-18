@@ -1,0 +1,30 @@
+{
+  "files.exclude": {
+    ".git": true,
+    ".husky": true,
+    ".vscode": true,
+    "nginx": true,
+    "node_modules": true,
+    "dist": true,
+    ".eslintignore": true,
+    ".eslintrc.cjs": true,
+    ".gitignore": true,
+    ".gitlab-ci.yml": true,
+    ".prettierignore": true,
+    ".prettierrc.cjs": true,
+    "CHANGELOG.md": true,
+    "commitlint.config.cjs": true,
+    "docker-compose.yml": true,
+    "Dockerfile": true,
+    "postcss.config.cjs": true,
+    "README.md": true,
+    "tsconfig.json": true,
+    "tsconfig.node.json": true,
+    "vite.config.ts": true,
+    "yarn.lock": true,
+    "package-lock.json": true,
+    "LICENSE": true,
+    "src/vite-env.d.ts": true
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative"
+}
