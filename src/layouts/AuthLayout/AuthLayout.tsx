@@ -15,7 +15,7 @@ const NaviagteToMainPageWhenAuthenticationFullfilled = memo(() => {
   useEffect(() => {
     authInLocalStorage.onChange((_, detail) => {
       if (!detail?.value?.accessToken) return;
-      window?.location?.replace?.(PATHS.dashboard);
+      window?.location?.replace?.(PATHS.main);
     });
   }, []);
   return null;
@@ -65,7 +65,7 @@ const GridSide = styled(Grid)<GridProps>(({ theme }) => ({
 
 const TwoSideLayout = memo(function TwoSideLayoutMemo() {
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
+    <Grid container component="main" sx={{ height: "100svh" }}>
       <GridBackgrounded item xs={false} sm={4} md={5} xl={8} />
       <GridSide item xs={12} sm={8} md={7} xl={4}>
         <BoxStyled>
@@ -80,7 +80,7 @@ TwoSideLayout.displayName = "TwoSideLayout";
 
 const FullwidthLayout = memo(function FullwidthLayoutMemo() {
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <BoxStyled>
         <Outlet />
       </BoxStyled>

@@ -1,8 +1,8 @@
 import authentication from "@/browser/cookies/authentication";
 import BoxImage from "@/components/box/BoxImage";
-import { ButtonPositive } from "@/components/buttons/ButtonPositive";
+import ButtonPositive from "@/components/buttons/ButtonPositive";
 import { H4 } from "@/components/typo/HTags";
-import { TypographyCommon } from "@/components/typo/TypographyCommon";
+import TypographyCommon from "@/components/typo/TypographyCommon";
 import { IMAGES } from "@/constants/images";
 import PATHS from "@/constants/paths";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";

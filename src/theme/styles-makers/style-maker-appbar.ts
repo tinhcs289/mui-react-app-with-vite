@@ -1,30 +1,30 @@
-import type { GlobalStylesProps } from "@mui/material";
+import type { StyleMakerFn } from "@/types";
+import { breadcrumbsClasses } from "@mui/material/Breadcrumbs";
+import { iconButtonClasses } from "@mui/material/IconButton";
+import { toolbarClasses } from "@mui/material/Toolbar";
+import { typographyClasses } from "@mui/material/Typography";
 
-export const appbarStyleMaker: Required<GlobalStylesProps>["styles"] = (
-  theme
-) => ({
-  backgroundColor: theme.palette.background.paper,
-  "& > div.MuiToolbar-root": {
+export const appbarStyleMaker: StyleMakerFn = (theme) => ({
+  backgroundColor: "transparent",
+  boxShadow: "none",
+  [`& > .${toolbarClasses.root}`]: {
+    backgroundColor: "transparent",
     // Page title (only show if there're no Breadcrumbs)
-    "& > h1.MuiTypography-root.db-page-title": {
+    [`& > h1.${typographyClasses.root}`]: {
       color: theme.palette.text.primary,
-      fontWeight: 400,
     },
     // Breadcrumbs
-    "& > nav.MuiBreadcrumbs-root": {
-      "& li.MuiBreadcrumbs-separator": {
-        color: theme.palette.text.primary,
-      },
-      "& li.MuiBreadcrumbs-li > a > .MuiTypography-root": {
-        color: theme.palette.text.primary,
-        ":hover": {
-          color: theme.palette.primary.main,
-          background: theme.palette.action.hover,
+    [`& > .${breadcrumbsClasses.root}`]: {
+      [`& > .${breadcrumbsClasses.ol}`]: {
+        [`& > .${breadcrumbsClasses.separator}`]: {
+          color: theme.palette.text.primary,
+        },
+        [`& > .${breadcrumbsClasses.li}`]: {
+          [`& > .${typographyClasses.root}`]: {},
         },
       },
     },
-    // Buttons
-    "& > button.MuiButtonBase-root": {
+    [`& .${iconButtonClasses.root}`]: {
       color: theme.palette.text.secondary,
       ":hover": {
         color: theme.palette.text.primary,

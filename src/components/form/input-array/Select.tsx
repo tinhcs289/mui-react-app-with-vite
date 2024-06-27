@@ -1,5 +1,5 @@
 import type { TextProps } from "@/components/form/input/Text";
-import { Text, textClasses as classes } from "@/components/form/input/Text";
+import Text, { textClasses as classes } from "@/components/form/input/Text";
 import type { AnyObject, Option, RHFInputProps, RHFRenderInput } from "@/types";
 import type { FilterOptionsState } from "@mui/material";
 import type {
@@ -238,9 +238,18 @@ const Select = forwardRef<unknown, SelectProps>(function ForwardRef(
       return value || (multiple ? [] : null);
     }
 
-    return multiple
-      ? options.filter((o) => o.value === get(value, "value"))
-      : options.find((o) => o.value === get(value, "value")) || null;
+    if (!multiple) {
+      return options.find((o) => o.value === get(value, "value")) || null;
+    }
+
+    const val = value as unknown as Option[];
+
+    if (!val?.length) return [];
+
+    return val
+      .map((v) => v.value as string)
+      .map((k) => options.find((o) => o.value === k))
+      .filter(Boolean);
   }, [value, multiple, options]);
 
   const memoRenderOption = useMemo(
@@ -277,7 +286,7 @@ const Select = forwardRef<unknown, SelectProps>(function ForwardRef(
             size="small"
             color={(color as any) || "primary"}
             label={memoGetOptionLabel(opt)}
-            style={{ margin: "1px" }}
+            style={{ margin: "1px", maxHeight: "20px" }}
             {...g({ index })}
           />
         ))}
@@ -417,19 +426,19 @@ function RHFSelect(props: RHFSelectProps) {
     }) => {
       return (
         <Select
-          ref={ref}
+          {...otherProps}
           multiple={multiple}
+          options={options}
           value={value}
           defaultValue={defaultValue || value || undefined}
           onChange={(_, val) => {
             onChange(val);
           }}
-          TextFieldProps={{ ...TextFieldProps, name, onBlur }}
-          {...(rules?.required ? { required: true } : {})}
-          {...(error?.message ? { errorText: error?.message } : {})}
-          {...otherProps}
-          error={invalid}
-          options={options}
+          // @ts-ignore
+          TextFieldProps={{ ...TextFieldProps, name, onBlur, inputRef: ref }}
+          required={!!rules?.required}
+          errorText={error?.message ?? undefined}
+          error={!!invalid}
         />
       );
     },
@@ -455,15 +464,16 @@ function RHFSelect(props: RHFSelectProps) {
   );
 }
 
-export { RHFSelect, Select };
+export default Select;
+export { RHFSelect };
 export type {
   BaseSelectProps,
   OnChange,
   OnChangeValue,
   OptionComponentProps,
   OwnerState,
-  RHFSelectProps,
   RenderSelectOptionCallback,
   RenderTags,
+  RHFSelectProps,
   SelectProps,
 };

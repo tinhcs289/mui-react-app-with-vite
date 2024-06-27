@@ -1,53 +1,15 @@
-export const PATHS_AUTH = {
-  /**
-   * @url '/auth/login'
-   */
-  login: "/auth/login",
-  /**
-   * @url '/auth/logout'
-   */
-  logout: "/auth/logout",
-  /**
-   * @url '/auth/register'
-   */
-  register: "/auth/register",
-  /**
-   * @url '/auth/activate-your-account'
-   */
-  userAccountActivate: "/auth/activate-your-account",
-  /**
-   * @url '/auth/forget-password'
-   */
-  forgetPassword: "/auth/forget-password",
-  /**
-   * @url '/auth/*'
-   */
-  authNotFound: "/auth/*",
-};
+import PATHS_BASE from "./paths-base";
 
 const PATHS = {
+  ...PATHS_BASE,
   /**
-   * @url '/not-found'
+   * @url '/main/grid-list'
    */
-  notfound: "/not-found",
-  ...PATHS_AUTH,
+  gridList: "/main/grid-list",
   /**
-   * @url '/module-in-development'
+   * @url '/main/form-inputs'
    */
-  inDevelop: "/module-in-development",
-  /**
-   * @url '/dashboard'
-   */
-  main: "/dashboard",
-  /**
-   * @url '/dashboard'
-   */
-  dashboard: "/dashboard",
-  customers: "/khach-hang",
-  report: "/bao-cao",
-  orders: "/don-hang",
-  ordersBuy: "/don-hang/don-mua",
-  ordersSell: "/don-hang/don-ban",
-  ordersProcess: "/don-hang/xu-ly-don-hang",
+  formInputs: "/main/form-inputs",
+  // TODO Add more path patterns here
 };
 export default PATHS;

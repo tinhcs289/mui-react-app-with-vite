@@ -1,3 +1,4 @@
+import { RETURN_URI_HASH } from "@/constants/query-string";
 import aesCrypt from "@/helpers/crypt-helpers/aesCrypt";
 import toEncodedUri from "@/helpers/string-helpers/toEncodedUri";
 import type { RouteConfig } from "@/types";
@@ -12,13 +13,8 @@ export default function useReturnUri(paramName: string) {
   const returnUriHash = useMemo(() => query.get(paramName), [paramName, query]);
 
   const returnUri = useMemo(() => {
-    if (!returnUriHash) return null;
-    return aesCrypt.decrypt(
-      returnUriHash
-        .replace(/p1L2u3S/g, "+")
-        .replace(/s1L2a3S4h/g, "/")
-        .replace(/e1Q2u3A4l/g, "=")
-    );
+    if (!returnUriHash) return "";
+    return aesCrypt.decrypt(returnUriHash);
   }, [returnUriHash]);
 
   const params = useMemo(
@@ -37,12 +33,7 @@ export default function useReturnUri(paramName: string) {
         returnUri = toEncodedUri(returnUri, params);
       }
       return {
-        [paramName]: aesCrypt.encrypt(
-          returnUri
-            .replace(/\+/g, "p1L2u3S")
-            .replace(/\//g, "s1L2a3S4h")
-            .replace(/=/g, "e1Q2u3A4l")
-        ),
+        [paramName]: aesCrypt.encrypt(returnUri),
       };
     },
     [paramName, params]
@@ -52,4 +43,8 @@ export default function useReturnUri(paramName: string) {
     returnUri,
     buildReturnHash,
   };
+}
+
+export function useReturnUriWhenUnAuthenticate() {
+  return useReturnUri(RETURN_URI_HASH);
 }

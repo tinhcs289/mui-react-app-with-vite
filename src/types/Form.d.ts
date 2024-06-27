@@ -2,7 +2,7 @@ import type { AnyObject } from "@/types/AnyObject";
 import type { ApiRequestStatus } from "@/types/ApiRequestStatus";
 import type { Moment } from "moment";
 import type { RefObject } from "react";
-import { useFormContext } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 
 export type FileData<FileInfo extends AnyObject = AnyObject> = FileInfo & {
   id: string | number;
@@ -121,7 +121,7 @@ export type CommonFormHOC<
 ) => CommonFormComponent<FormValues, ExtendProps, CallbackDataOnClose>;
 
 export type CommonFormContextValues<FormValues extends AnyObject = AnyObject> =
-  ReturnType<typeof useFormContext<FormValues>> & {
+  UseFormReturn<FormValues> & {
     formRef?: RefObject<HTMLFormElement>;
     dispatchSubmit?: () => void;
     submitReasonRef?: RefObject<string | null | undefined>;
@@ -131,14 +131,12 @@ export type CommonFormStates<
   ExtendStates extends AnyObject = AnyObject,
   CallbackDataOnClose extends AnyObject = AnyObject
 > = {
+  namePrefix?: string;
   /**
    * @default 'editable'
    */
   formType?: CommonFormType;
   loading?: boolean;
   submitting?: boolean;
-  /**
-   * being used when display form as a Dialog
-   */
   onClose?: CommonFormOnClose<CallbackDataOnClose>;
 } & ExtendStates;

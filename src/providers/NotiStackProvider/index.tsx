@@ -1,6 +1,6 @@
 import { SNACKBAR_VARIANT } from "@/constants/snackbar";
 import isNotBlankString from "@/helpers/common-helpers/isNotBlankString";
-import useSnackbarNotify from "@/hooks/useSnackbarNotify";
+import useSnackbarNotify from "@/hooks/common-hooks/useSnackbarNotify";
 import { rootSelector as snackbarSelector } from "@/redux/snackbar";
 import Slide from "@mui/material/Slide";
 import { usePrevious } from "@uidotdev/usehooks";

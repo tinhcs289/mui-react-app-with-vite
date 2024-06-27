@@ -1,5 +1,5 @@
 export type EnvironmentName =
-  | "local"
+  | "localhost"
   | "development"
   | "staging"
   | "production"
