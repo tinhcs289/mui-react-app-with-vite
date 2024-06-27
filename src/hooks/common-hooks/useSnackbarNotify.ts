@@ -23,7 +23,7 @@ export default function useSnackbarNotify() {
 
   const showSuccessNotify = (
     message: string,
-    options?: Omit<OptionsObject, "variant">
+    options?: Omit<OptionsObject<"success">, "variant">
   ) => {
     enqueueSnackbar(stringOrEmpty(message), {
       autoHideDuration: 2000,
@@ -34,7 +34,7 @@ export default function useSnackbarNotify() {
 
   const showErrorNotify = (
     message: string,
-    options?: Omit<OptionsObject, "variant">
+    options?: Omit<OptionsObject<"error">, "variant">
   ) => {
     enqueueSnackbar(stringOrEmpty(message), {
       autoHideDuration: 2000,
@@ -45,7 +45,7 @@ export default function useSnackbarNotify() {
 
   const showWaringNotify = (
     message: string,
-    options?: Omit<OptionsObject, "variant">
+    options?: Omit<OptionsObject<"warning">, "variant">
   ) => {
     enqueueSnackbar(stringOrEmpty(message), {
       autoHideDuration: 2000,
@@ -56,7 +56,7 @@ export default function useSnackbarNotify() {
 
   const showInfoNotify = (
     message: string,
-    options?: Omit<OptionsObject, "variant">
+    options?: Omit<OptionsObject<"info">, "variant">
   ) => {
     enqueueSnackbar(stringOrEmpty(message), {
       autoHideDuration: 2000,

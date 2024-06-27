@@ -2,15 +2,15 @@ import authInLocalStorage from "@/browser/local-storage/authentication";
 import contentMaxWidth from "@/browser/local-storage/contentMaxWidth";
 import PATHS from "@/constants/paths";
 import createStatesContext from "@/helpers/react-context-helpers/createStatesContext";
+import type { MenuItemData } from "@/types";
 import { Theme, useMediaQuery, type Breakpoint } from "@mui/material";
 import { usePrevious } from "@uidotdev/usehooks";
 import isEqual from "lodash/isEqual";
 import type { ReactNode } from "react";
 import { memo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { DEFAULT_WIDTH } from "./constants";
-import type { MenuItemData } from "./types";
 import { asideItems } from "./aside-items";
+import { DEFAULT_WIDTH } from "./constants";
 
 function redirectToLogout() {
   window?.location?.replace?.(PATHS.login);
@@ -200,7 +200,7 @@ const BreadcrumbInitializer = memo(() => {
         if (item.active) {
           title = item.label;
           breadcrumb = tempBreadcrumb;
-          throw new Error();
+          throw new Error("break");
         }
         if (Array.isArray(item.childs)) {
           item.childs.forEach((child) => {
@@ -208,18 +208,23 @@ const BreadcrumbInitializer = memo(() => {
               tempBreadcrumb.push(child);
               breadcrumb = tempBreadcrumb;
               title = child.label;
-              throw new Error();
+              throw new Error("break");
             }
           });
         }
       });
     } catch (error) {
-      console.log(error);
+      // eslint-disable-next-line no-empty
     }
 
     if (isEqual(title, pageTitle)) return;
     setState({ pageTitle: title });
     setState({ rootBreadcrumb: breadcrumb });
+
+    console.log(
+      `breadcrumb detected [${breadcrumb.map((b) => b?.labelText).join(" > ")}]`
+    );
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menuItems]);
 

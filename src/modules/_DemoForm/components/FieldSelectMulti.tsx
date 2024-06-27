@@ -1,0 +1,27 @@
+import { RHFSelect } from "@/components/form/input-array/Select";
+import { required } from "@/helpers/react-hook-form-helpers";
+import { useTranslation } from "react-i18next";
+import { useFormContext } from "../context";
+import type { Option } from "@/types";
+
+export default function FieldSelectMulti() {
+  const { control } = useFormContext();
+  const { t } = useTranslation();
+  return (
+    <RHFSelect
+      control={control}
+      name="multipleSelectfield"
+      multiple
+      label="Nhập liệu dạng lựa chọn"
+      placeholder="Lựa chọn ít nhất 1 giá trị"
+      rules={required(t("common:pleaseSelect"))}
+      options={Object.keys([...Array(10)]).map(
+        (i) =>
+          ({
+            value: `value_${+i + 1}`,
+            label: `lựa chọn số ${+i + 1}`,
+          } as Option)
+      )}
+    />
+  );
+}

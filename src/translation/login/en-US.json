@@ -5,5 +5,6 @@
   "rememberMe": "Remember me",
   "forgotPassword": "Forgot password?",
   "dontHaveAccount_register": "Don't have an account? Sign up",
-  "invalidAccountOrPassword": "Invalid Account or Password"
+  "invalidAccountOrPassword": "Invalid Account or Password",
+  "logout": "Logout"
 }

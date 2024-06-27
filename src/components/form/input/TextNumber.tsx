@@ -11,12 +11,22 @@ import type {
 } from "react-number-format";
 import { NumericFormat } from "react-number-format";
 import type { TextProps } from "./Text";
-import { Text } from "./Text";
+import Text from "./Text";
 
 type TextNumberProps = TextProps & NumericFormatProps;
 
 type RHFTextNumberProps = RHFInputProps &
-  Omit<TextNumberProps, "error" | "onChange" | "value" | "name"> & {
+  Omit<
+    TextNumberProps,
+    | "error"
+    | "errorText"
+    | "onChange"
+    | "value"
+    | "name"
+    | "defaultValue"
+    | "onValueChange"
+    | "required"
+  > & {
     defaultValue?: string | number;
   };
 
@@ -94,26 +104,18 @@ function RHFTextNumber({
       fieldState: { invalid, error },
     }) => (
       <TextNumberDebounced
-        name={name}
+        name={name as string}
         value={value || null}
         {...(defaultValue ? { defaultValue } : {})}
         onValueChange={({ floatValue }) => {
-          onChange(floatValue || null);
+          onChange(typeof floatValue === "number" ? floatValue : null);
         }}
         onBlur={onBlur}
         inputRef={ref}
         error={invalid}
-        {...(rules?.required
-          ? {
-              required: true,
-            }
-          : {})}
-        {...(error?.message
-          ? {
-              errorText: error?.message,
-            }
-          : {})}
         {...inputProps}
+        required={!!rules?.required}
+        errorText={error?.message ?? undefined}
       />
     ),
     [name, rules?.required, inputProps, defaultValue]
@@ -130,10 +132,6 @@ function RHFTextNumber({
   );
 }
 
-export {
-  RHFTextNumber,
-  TextNumber,
-  TextNumberDebounced,
-  createNumberFieldDebounced,
-};
+export default TextNumber;
+export { createNumberFieldDebounced, RHFTextNumber, TextNumberDebounced };
 export type { RHFTextNumberProps, TextNumberProps };

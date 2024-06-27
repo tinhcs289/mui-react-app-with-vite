@@ -24,7 +24,9 @@
     "yarn.lock": true,
     "package-lock.json": true,
     "LICENSE": true,
-    "src/vite-env.d.ts": true
+    "src/vite-env.d.ts": true,
+    "open-with-vscode.bat": true
   },
+  "typescript.tsdk": "node_modules\\typescript\\lib",
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }

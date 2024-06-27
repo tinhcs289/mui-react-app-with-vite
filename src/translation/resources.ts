@@ -1,19 +1,19 @@
 import { AcceptLanguageEnum } from "@/constants/language";
-import type { LocaleJSON, TTranslation } from "@/types";
+import type { LocaleJSON, TranslationResoure } from "@/types";
 
-type TLanguageKey = `${AcceptLanguageEnum}`;
+type LanguageKey = `${AcceptLanguageEnum}`;
 
 const allKeys = Object.values(AcceptLanguageEnum);
 
 const resources = allKeys.reduce((resrc, languageCode) => {
   resrc[languageCode] = {} as LocaleJSON;
   return resrc;
-}, {} as TTranslation);
+}, {} as TranslationResoure);
 export default resources;
 
-export const addTranslation = (name: string, translation: TTranslation) => {
+export function addTranslation(name: string, translation: TranslationResoure) {
   allKeys.forEach((languageCode) => {
-    resources[AcceptLanguageEnum[languageCode as TLanguageKey]][name] =
-      translation[AcceptLanguageEnum[languageCode as TLanguageKey]];
+    resources[AcceptLanguageEnum[languageCode as LanguageKey]][name] =
+      translation[AcceptLanguageEnum[languageCode as LanguageKey]];
   });
-};
+}

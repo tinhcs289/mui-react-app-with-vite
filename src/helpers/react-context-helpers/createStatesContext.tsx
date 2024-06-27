@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+"use client";
+
 import lodashGet from "lodash/get";
 import isEqual from "lodash/isEqual";
 import type { ReactNode } from "react";
@@ -14,7 +17,7 @@ import {
 
 type BaseStates = { [x: string]: any };
 
-type UseSetStateReturns<StateValues extends BaseStates = BaseStates> = (
+export type UseSetStateReturns<StateValues extends BaseStates = BaseStates> = (
   value: Partial<StateValues> | ((states?: StateValues) => StateValues)
 ) => void;
 
@@ -41,10 +44,15 @@ type UseSetStateReturns<StateValues extends BaseStates = BaseStates> = (
     setState({ backgroundColor: 'blue' })}
 
     // How to add a action to store
+    // option 1: the original way
     const { ... } = createStatesContext<{ ..., someFunctionToCall: (params: ...) => void }>();
     ....
     const someFunctionToCall = useCallback((params: ...) => { ... }, [...]);
     useInitState('someFunctionToCall', someFunctionToCall, { when: 'whenever-value-changes' });
+    // option 1: the shorter way
+    const { ..., useAction } = createStatesContext<{ ..., someFunctionToCall: (params: ...) => void } }>();
+    ....
+    const someFunctionToCall = useAction('someFunctionToCall',(params: ...) => { ... }, [...]);
 
     // How to use a function which has been added to store.
     const someFunctionToCall = useGetState((store) => store.someFunctionToCall);
@@ -131,11 +139,11 @@ export default function createStatesContext<
       when: "once-on-mount",
     }
   ) {
+    const forceUpdate = options?.when === "whenever-value-changes";
+
     const setState = useSetState();
     const state = useGetState((s) => lodashGet(s, field));
     const [init, setInit] = useState(false);
-
-    const forceUpdate = options?.when === "whenever-value-changes";
 
     useEffect(() => {
       if (init && !forceUpdate) return;
@@ -167,6 +175,18 @@ export default function createStatesContext<
       return;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
+
+    return init;
+  }
+
+  function useAction<F extends Function>(
+    actionName: keyof StateValues,
+    ...useCallbackParams: Parameters<typeof useCallback<F>>
+  ) {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const callback = useCallback<F>(...useCallbackParams);
+    useInitState(actionName, callback, { when: "whenever-value-changes" });
+    return callback;
   }
 
   return {
@@ -174,6 +194,7 @@ export default function createStatesContext<
     useGetState,
     useSetState,
     useInitState,
+    useAction,
   };
 }
 
@@ -188,3 +209,6 @@ export type UseSetState<StateValues extends BaseStates = BaseStates> =
 
 export type UseInitState<StateValues extends BaseStates = BaseStates> =
   CreateStatesContext<StateValues>["useInitState"];
+
+export type UseAction<StateValues extends BaseStates = BaseStates> =
+  CreateStatesContext<StateValues>["useAction"];

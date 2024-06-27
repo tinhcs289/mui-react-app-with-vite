@@ -4,9 +4,17 @@ import type { ThemeOptions } from "@mui/material/styles";
  * @see https://mui.com/material-ui/customization/default-theme/#main-content
  */
 const lightThemeOptions: ThemeOptions = {
-  shadows: baseThemeOptions.shadows,
   typography: baseThemeOptions.typography,
-  components: baseThemeOptions.components,
-  // TODO [MUI] custom light theme here
+  ...(!baseThemeOptions.shadows?.length
+    ? {}
+    : {
+        shadows: baseThemeOptions.shadows,
+      }),
+  palette: {
+    ...baseThemeOptions?.palette,
+    mode: "light",
+  },
+  components: { ...baseThemeOptions.components },
+  // TODO [MUI] custom dark theme here
 };
 export default lightThemeOptions;

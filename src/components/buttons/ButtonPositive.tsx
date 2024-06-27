@@ -1,9 +1,9 @@
 import type { ButtonCommonProps } from "./ButtonCommon";
-import { ButtonCommon } from "./ButtonCommon";
+import ButtonCommon from "./ButtonCommon";
 
 export type ButtonPositiveProps = ButtonCommonProps;
 
-export function ButtonPositive(props: ButtonCommonProps) {
+export default function ButtonPositive(props: ButtonCommonProps) {
   const { children, ...otherProps } = props;
   return (
     <ButtonCommon

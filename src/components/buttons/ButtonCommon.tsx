@@ -7,9 +7,10 @@ export type ButtonCommonProps = ButtonProps & {
   noWrap?: boolean;
 };
 
-export const ButtonCommon: ComponentType<ButtonCommonProps> = styled(Button, {
+const ButtonCommon: ComponentType<ButtonCommonProps> = styled(Button, {
   shouldForwardProp: (p) => p !== "noTextTransform" && p !== "noWrap",
 })<ButtonCommonProps>(({ noTextTransform, noWrap }) => ({
   ...(!!noTextTransform ? { textTransform: "none" } : {}),
   ...(!!noWrap ? { whiteSpace: "nowrap" } : {}),
 }));
+export default ButtonCommon;

@@ -1,8 +1,8 @@
-import type { GetUserProfileApiReturns } from "@/api/userProfile/getUserProfileApi";
 import { HttpRequestStatus } from "@/constants/http-request-status";
 import { createCase } from "@/helpers/redux-helpers";
-import type { States } from "../../types";
+import type { GetUserProfileApiReturns } from "@/http/common-api/user-profile/getUserProfileApi";
 import { rootName } from "../../states";
+import type { States } from "../../types";
 
 export type RequestGetUserProfileSuccessPayload = {
   data: GetUserProfileApiReturns;

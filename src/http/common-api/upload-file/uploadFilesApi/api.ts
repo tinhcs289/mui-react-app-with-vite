@@ -2,7 +2,7 @@ import { HttpRequestStatus } from "@/constants/http-request-status";
 import callHttp from "@/helpers/async-helpers/callHttp";
 import tryDo from "@/helpers/async-helpers/tryDo";
 import isOkWithData from "@/helpers/http-request-helpers/isOkWithData";
-import uploadFileApi from "@/http/common-api/upload-file/uploadFileApi";
+import { uploadFileApi } from "@/http/common-api/upload-file/uploadFileApi";
 import type { ApiRequestStatus } from "@/types";
 import type { ApiPayload, ApiReturns } from "./types";
 

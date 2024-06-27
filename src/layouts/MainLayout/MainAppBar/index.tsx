@@ -6,7 +6,6 @@ import { memo, useMemo } from "react";
 import { APP_BAR_HEIGHT, ASIDE_MENU_WIDTH } from "../constants";
 import { useGetStateMainLayout } from "../context";
 import ButtonLanguage from "./ButtonLanguage";
-import ButtonLogout from "./ButtonLogout";
 import ButtonMenu from "./ButtonMenu";
 import PageTitle from "./PageTitle";
 
@@ -31,9 +30,15 @@ const AppBarStyled = styled(MuiAppBar, {
 
 const ToolbarStyled = styled(Toolbar)<ToolbarProps>(({ theme }) => ({
   height: `${APP_BAR_HEIGHT}px !important`,
+  width: "100%",
   minHeight: `${APP_BAR_HEIGHT}px !important`,
   paddingRight: `${theme.spacing(1)} !important`,
   paddingLeft: `${theme.spacing(1)} !important`,
+  ...(theme.palette.mode === "light"
+    ? {
+        backgroundColor: theme.palette.primary.dark,
+      }
+    : {}),
 }));
 
 const MainAppBar = memo(() => {
@@ -45,19 +50,16 @@ const MainAppBar = memo(() => {
 
   const $ButtonLanguage = useMemo(() => <ButtonLanguage />, []);
 
-  const $ButtonLogout = useMemo(() => <ButtonLogout />, []);
-
   return (
     <AppBarStyled
       position="absolute"
       open={isAsideOpen}
       id="main-layout-appbar-root"
     >
-      <ToolbarStyled>
+      <ToolbarStyled sx={{ background: "transparent" }}>
         {$ButtonMenu}
         {$PageTitle}
         {$ButtonLanguage}
-        {$ButtonLogout}
       </ToolbarStyled>
     </AppBarStyled>
   );

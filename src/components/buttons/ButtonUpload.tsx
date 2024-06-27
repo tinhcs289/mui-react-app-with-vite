@@ -1,14 +1,14 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback } from "react";
 import type { ButtonCommonProps } from "./ButtonCommon";
-import { ButtonCommon } from "./ButtonCommon";
+import ButtonCommon from "./ButtonCommon";
 
 export type ButtonUploadProps = ButtonCommonProps & {
   multiple?: boolean;
   onUpload?: (files: Array<File>) => void;
 };
 
-export function ButtonUpload(props: ButtonUploadProps) {
+export default function ButtonUpload(props: ButtonUploadProps) {
   const { children, onUpload, multiple = false, ...otherProps } = props;
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
