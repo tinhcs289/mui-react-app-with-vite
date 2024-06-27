@@ -5,5 +5,6 @@
   "rememberMe": "Ghi nhớ tài khoản",
   "forgotPassword": "Quên mật khẩu?",
   "dontHaveAccount_register": "Chưa có tài khoản? Đăng ký",
-  "invalidAccountOrPassword": "Tài khoản hoặc mật khẩu không đúng"
+  "invalidAccountOrPassword": "Tài khoản hoặc mật khẩu không đúng",
+  "logout": "Đăng xuất"
 }

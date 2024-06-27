@@ -12,5 +12,3 @@ const InDevelopPage: RouteConfig = {
 };
 
 export default InDevelopPage;
-
-export type { PageProps as InDevelopPageProps } from "./types";

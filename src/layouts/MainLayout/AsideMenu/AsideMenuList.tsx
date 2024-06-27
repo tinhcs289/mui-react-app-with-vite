@@ -1,13 +1,17 @@
 import BoxTooltip from "@/components/box/BoxTooltip";
 import arrayOrEmpty from "@/helpers/format-helpers/arrayOrEmpty";
+import stringOrEmpty from "@/helpers/format-helpers/stringOrEmpty";
+import type { MenuItemData } from "@/types";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Theme, useMediaQuery, useTheme } from "@mui/material";
+import type { Theme } from "@mui/material";
+import { styled, useMediaQuery, useTheme } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
 import type { IconButtonProps } from "@mui/material/IconButton";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
+import type { ListItemButtonProps } from "@mui/material/ListItemButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -16,8 +20,14 @@ import type { MouseEventHandler, ReactNode } from "react";
 import { memo, useCallback, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { useGetStateMainLayout, useSetStateMainLayout } from "../context";
-import type { MenuItemData } from "../types";
-import stringOrEmpty from "@/helpers/format-helpers/stringOrEmpty";
+
+const ListItemButtonStyled = styled(ListItemButton)<ListItemButtonProps>(
+  ({ theme }) => ({
+    marginBottom: theme.spacing(0.5),
+    borderRadius: theme.spacing(1),
+    overflow: "hidden",
+  })
+);
 
 function ToggleButton({
   open,
@@ -136,7 +146,11 @@ function MenuItem(props: {
   return (
     <>
       <NavLink {...linkProps} onClick={handleClickItem as any}>
-        <ListItemButton {...listItemProps} disableTouchRipple disableRipple>
+        <ListItemButtonStyled
+          {...listItemProps}
+          disableTouchRipple
+          disableRipple
+        >
           {!Icon ? null : (
             <ListItemIcon {...slotProps?.iconWrapper}>
               <Icon {...({ ...slotProps?.icon, ...activeIconProps } as any)} />
@@ -156,7 +170,7 @@ function MenuItem(props: {
           {Array.isArray(childs) && childs.length > 0 ? (
             <ToggleButton open={isOpenSubMenu} onClick={handleToggleSubMenu} />
           ) : null}
-        </ListItemButton>
+        </ListItemButtonStyled>
       </NavLink>
       {children}
     </>
@@ -176,6 +190,8 @@ const AsideMenuList = memo(() => {
     return false;
   }, []);
 
+  const theme = useTheme();
+
   const $Menu = useMemo(() => {
     return (
       <>
@@ -194,13 +210,28 @@ const AsideMenuList = memo(() => {
           const hasChilds =
             Array.isArray(item.childs) && item.childs.length > 0;
           if (!hasChilds) {
-            return (
+            return isAsideOpen ? (
               <MenuItem
                 key={item.id}
                 data={item}
                 active={!!item.active}
                 depth={0}
               />
+            ) : (
+              <BoxTooltip
+                key={item.id}
+                tooltipProps={{
+                  title: item.labelText,
+                  placement: "right",
+                }}
+              >
+                <MenuItem
+                  key={item.id}
+                  data={item}
+                  active={!!item.active}
+                  depth={0}
+                />
+              </BoxTooltip>
             );
           } else {
             const childActive = isChildActive(item);
@@ -212,8 +243,17 @@ const AsideMenuList = memo(() => {
                 active={!!item.active}
                 depth={0}
               >
-                <Collapse in={!!item.openSubMenu} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
+                <Collapse
+                  in={!!item.openSubMenu}
+                  timeout="auto"
+                  unmountOnExit
+                  sx={{ borderRadius: theme.spacing(1), overflow: "hidden" }}
+                >
+                  <List
+                    component="div"
+                    disablePadding
+                    sx={{ borderRadius: theme.spacing(1), overflow: "hidden" }}
+                  >
                     {item?.childs?.map?.((child) => {
                       return (
                         <MenuItem
@@ -273,7 +313,7 @@ const AsideMenuList = memo(() => {
       </>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asideMenuItems, isAsideOpen]);
+  }, [asideMenuItems, isAsideOpen, theme]);
   return $Menu;
 });
 

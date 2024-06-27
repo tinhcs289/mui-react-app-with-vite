@@ -1,5 +1,5 @@
 import type { TypographyCommonProps } from "@/components/typo/TypographyCommon";
-import { TypographyCommon } from "@/components/typo/TypographyCommon";
+import TypographyCommon from "@/components/typo/TypographyCommon";
 import { alpha, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { BreadcrumbsProps } from "@mui/material/Breadcrumbs";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
@@ -14,13 +14,17 @@ const LabelBreadcrumb = styled(TypographyCommon, {
   alignItems: "center",
   flexGrow: 1,
   opacity: isLast ? 1 : 0.7,
-  fontWeight: isLast ? 400 : 200,
+  color: theme.palette.text.primary,
+  fontSize: theme.typography.h6.fontSize,
+  fontWeight: 400,
   paddingLeft: theme.spacing(1),
   paddingRight: theme.spacing(1),
   borderRadius: theme.spacing(0.5),
+  textDecorationLine: "none",
   ":hover": {
     opacity: 1,
-    background: alpha(theme.palette.primary.dark, 0.9),
+    background: alpha(theme.palette.grey[200], 0.2),
+    textDecorationLine: "none",
   },
 }));
 
@@ -50,7 +54,6 @@ const PageTitle = memo(() => {
   const $Title = useMemo(() => {
     return (
       <TypographyCommon
-        className="db-page-title"
         component="h1"
         variant="h6"
         color="inherit"
@@ -74,12 +77,17 @@ const PageTitle = memo(() => {
           return (
             <LabelBreadcrumb
               key={i}
-              component={NavLink}
-              variant="h6"
+              variant={isLast ? "h1" : "h6"}
               color="HighlightText"
+              fontWeight={isLast ? 700 : 400}
               maxLines={1}
               isLast={isLast}
-              {...{ to: b?.url || "#" }}
+              {...(!isLast
+                ? {
+                    component: NavLink,
+                    to: b?.url || "#",
+                  }
+                : {})}
             >
               {!Icon ? null : (
                 <>

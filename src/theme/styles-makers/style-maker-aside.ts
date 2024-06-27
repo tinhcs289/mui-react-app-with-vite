@@ -1,15 +1,16 @@
 import { alpha } from "@mui/material";
-import { GlobalStylesProps } from "@mui/material/GlobalStyles";
+import type { StyleMakerFn } from "@/types";
+import { drawerClasses } from "@mui/material/Drawer";
 
 const color = {
-  nav: "#1C2536",
+  nav: "rgb(20, 22, 23)",
   navDarker: "#172131",
   navItem: "#9DA4AE",
   navItemActiveBg: "rgba(255, 255, 255, 0.04)",
 };
 
 const activeAsideItemStyleMaker =
-  (itemLevel: number = 1): Required<GlobalStylesProps>["styles"] =>
+  (itemLevel: number = 1): StyleMakerFn =>
   (theme) => ({
     position: "relative",
     "::before": {
@@ -23,13 +24,9 @@ const activeAsideItemStyleMaker =
     },
   });
 
-export const asideStyleMaker: Required<GlobalStylesProps>["styles"] = (
-  theme
-) => ({
-  backgroundColor: color.nav,
-  "& > div.MuiDrawer-paper": {
-    backgroundColor: "transparent",
-    // Tool bar
+export const asideStyleMaker: StyleMakerFn = (theme) => ({
+  [`& > .${drawerClasses.paper}`]: {
+    backgroundColor: color.nav,
     "& > div.MuiToolbar-root": {
       "& > button.MuiButtonBase-root > svg": {
         color: color.navItem,
@@ -51,6 +48,7 @@ export const asideStyleMaker: Required<GlobalStylesProps>["styles"] = (
       },
       "& .MuiListItemButton-root": {
         "& > .MuiListItemIcon-root": {
+          minWidth: theme.spacing(5.25),
           color: color.navItem,
         },
         "& > .MuiListItemText-root": {

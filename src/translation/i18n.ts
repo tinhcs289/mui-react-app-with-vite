@@ -5,16 +5,18 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import resources, { addTranslation } from "./resources";
 //
+import aside from "./aside";
 import common from "./common";
 import login from "./login";
 import notFound from "./notFound";
 import register from "./register";
-
+//
+addTranslation("aside", aside);
 addTranslation("common", common);
 addTranslation("login", login);
 addTranslation("register", register);
 addTranslation("notFound", notFound);
-
+//
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)

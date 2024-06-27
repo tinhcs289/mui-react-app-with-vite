@@ -10,12 +10,22 @@ import type {
 } from "react-number-format";
 import { PatternFormat } from "react-number-format";
 import type { TextProps } from "./Text";
-import { Text } from "./Text";
+import Text from "./Text";
 
 type TextPatternProps = TextProps & PatternFormatProps;
 
 type RHFTextPatternProps = RHFInputProps &
-  Omit<TextPatternProps, "error" | "onChange" | "value" | "name"> & {
+  Omit<
+    TextPatternProps,
+    | "error"
+    | "errorText"
+    | "onChange"
+    | "value"
+    | "name"
+    | "defaultValue"
+    | "onValueChange"
+    | "required"
+  > & {
     defaultValue?: string;
   };
 
@@ -78,7 +88,7 @@ function RHFTextPattern({
       fieldState: { invalid, error },
     }) => (
       <TextPatternDebounced
-        name={name}
+        name={name as string}
         value={value}
         {...(defaultValue ? { defaultValue } : {})}
         onValueChange={({ formattedValue }) => {
@@ -87,9 +97,9 @@ function RHFTextPattern({
         onBlur={onBlur}
         inputRef={ref}
         error={invalid}
-        {...(rules?.required ? { required: true } : {})}
-        {...(error?.message ? { errorText: error?.message } : {})}
         {...inputProps}
+        required={!!rules?.required}
+        errorText={error?.message ?? undefined}
       />
     ),
     [name, rules?.required, inputProps, defaultValue]
@@ -106,10 +116,6 @@ function RHFTextPattern({
   );
 }
 
-export {
-  createNumericFieldDebounce,
-  RHFTextPattern,
-  TextPattern,
-  TextPatternDebounced,
-};
+export default TextPattern;
+export { createNumericFieldDebounce, RHFTextPattern, TextPatternDebounced };
 export type { RHFTextPatternProps, TextPatternProps };

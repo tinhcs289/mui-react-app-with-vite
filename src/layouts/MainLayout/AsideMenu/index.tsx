@@ -1,17 +1,22 @@
-import { useGetStateMainLayout, useSetStateMainLayout } from "../context";
+import BoxTooltip from "@/components/box/BoxTooltip";
 import MenuIcon from "@mui/icons-material/Menu";
 import { styled } from "@mui/material";
-import Divider from "@mui/material/Divider";
 import type { DrawerProps } from "@mui/material/Drawer";
 import Drawer, { drawerClasses } from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import type { ListProps } from "@mui/material/List";
 import List from "@mui/material/List";
 import type { ToolbarProps } from "@mui/material/Toolbar";
 import Toolbar, { toolbarClasses } from "@mui/material/Toolbar";
-import Tooltip from "@mui/material/Tooltip";
 import type { ReactNode } from "react";
 import { memo, useCallback, useMemo } from "react";
-import { APP_BAR_HEIGHT, ASIDE_MENU_WIDTH } from "../constants";
+import {
+  APP_BAR_HEIGHT,
+  ASIDE_BOTTOM_HEIGHT,
+  ASIDE_MENU_WIDTH,
+} from "../constants";
+import { useGetStateMainLayout, useSetStateMainLayout } from "../context";
+import AsideBottom from "./AsideBottom";
 import AsideMenuList from "./AsideMenuList";
 
 function AsideToggleButton() {
@@ -25,11 +30,14 @@ function AsideToggleButton() {
   const $Button = useMemo(() => {
     if (isAsideOpen) return null;
     return (
-      <Tooltip title="Mở rộng">
-        <IconButton onClick={toggleAside}>
+      <BoxTooltip tooltipProps={{ title: "Mở rộng" }}>
+        <IconButton
+          onClick={toggleAside}
+          sx={{ color: (theme) => theme.palette.primary.contrastText }}
+        >
           <MenuIcon />
         </IconButton>
-      </Tooltip>
+      </BoxTooltip>
     );
   }, [isAsideOpen, toggleAside]);
 
@@ -42,25 +50,28 @@ const ToolbarStyled = styled(Toolbar)<ToolbarProps>(({ theme }) => ({
   justifyContent: "flex-end",
   paddingLeft: `${theme.spacing(1)} !important`,
   paddingRight: `${theme.spacing(1)} !important`,
+  background: "transparent",
 }));
 
 const DrawerStyled = styled(Drawer, {
   shouldForwardProp: (p) => p !== "open",
 })<DrawerProps>(({ theme, open }) => ({
+  height: "100svh",
+  boxSizing: "border-box",
   ...(!open
     ? {
         zIndex: theme.zIndex.modal + 2,
       }
     : {}),
-  [`& ${drawerClasses.paper}`]: {
+  [`& .${drawerClasses.paper}`]: {
+    boxSizing: "border-box",
     position: "relative",
     whiteSpace: "nowrap",
-    width: `${ASIDE_MENU_WIDTH}px`,
+    width: !open ? 0 : `${ASIDE_MENU_WIDTH}px`,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    boxSizing: "border-box",
     ...(!open
       ? {
           overflowX: "hidden",
@@ -68,17 +79,24 @@ const DrawerStyled = styled(Drawer, {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
-          width: 0,
           [theme.breakpoints.up("sm")]: {
             width: theme.spacing(7),
           },
         }
       : {}),
   },
-  [`& ${toolbarClasses.root}`]: {
+  [`& .${toolbarClasses.root}`]: {
     height: `${APP_BAR_HEIGHT}px !important`,
     minHeight: `${APP_BAR_HEIGHT}px !important`,
   },
+}));
+
+const ListStyled = styled(List, { shouldForwardProp: (p) => p !== "open" })<
+  ListProps & { open?: boolean }
+>(({ open, theme }) => ({
+  transition: "all ease 0.3s",
+  height: `calc(100% - ${APP_BAR_HEIGHT + 4 + ASIDE_BOTTOM_HEIGHT}px)`,
+  padding: !open ? 0 : theme.spacing(0, 1.5),
 }));
 
 function AsideDrawer({ children }: { children?: ReactNode }) {
@@ -92,8 +110,11 @@ function AsideDrawer({ children }: { children?: ReactNode }) {
       <ToolbarStyled>
         <AsideToggleButton />
       </ToolbarStyled>
-      <Divider />
-      <List component="nav">{children}</List>
+      {/* <Divider /> */}
+      <ListStyled component="nav" disablePadding open={isAsideOpen}>
+        {children}
+      </ListStyled>
+      <AsideBottom />
     </DrawerStyled>
   );
 }

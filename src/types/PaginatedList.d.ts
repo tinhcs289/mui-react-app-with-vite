@@ -1,19 +1,20 @@
-import type { AnyObject } from "@/types/AnyObject";
+export type GetPaginatedListReturns<T> = {
+  totalCount: number;
+  result: T[];
+};
 
 export type SortDirection = "asc" | "desc";
-export type PaginatedListData<Item extends AnyObject = AnyObject> = {
-  totalCount: number;
-  result: Item[];
-  pageIndex?: number;
-  pageSize?: number;
-  sortBy?: string;
-  sortDirection?: SortDirection;
+export type SortBy = {
+  by: string;
+  direction: SortDirection;
 };
-export type PaginatedListQuery<Filter extends AnyObject = AnyObject> = {
+
+export type GetPaginatedListParams = {
+  keyword?: string;
   pageIndex: number;
   pageSize: number;
-  keyword?: string;
-  sortBy?: string;
-  sortDirection?: SortDirection;
-  query?: Filter;
+  order?: SortBy[];
+  query?: {
+    [x: string]: any;
+  };
 };

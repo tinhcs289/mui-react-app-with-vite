@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import type { ButtonCommonProps } from "./ButtonCommon";
-import { ButtonCommon } from "./ButtonCommon";
+import ButtonCommon from "./ButtonCommon";
 export type ButtonLinkProps = ButtonCommonProps & { to: string };
 
 export default function ButtonLink(props: ButtonLinkProps) {

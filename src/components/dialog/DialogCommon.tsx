@@ -1,7 +1,7 @@
 import createStatesContext from "@/helpers/react-context-helpers/createStatesContext";
 import { AnyObject, CommonFormOnClose } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
-import { styled } from "@mui/material";
+import { styled, Theme, useMediaQuery } from "@mui/material";
 import Backdrop, { BackdropProps } from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Dialog, {
@@ -13,6 +13,7 @@ import DialogContent, { DialogContentProps } from "@mui/material/DialogContent";
 import DialogTitle, { DialogTitleProps } from "@mui/material/DialogTitle";
 import Grid, { GridProps } from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import Slide from "@mui/material/Slide";
 import Typography, { TypographyProps } from "@mui/material/Typography";
 import type {
   ComponentType,
@@ -21,14 +22,31 @@ import type {
   ReactNode,
   Ref,
 } from "react";
-import { memo, useCallback, useMemo } from "react";
+import { forwardRef, memo, useCallback, useMemo } from "react";
+
+enum SlideTypeEnum {
+  down = "down",
+  up = "up",
+  left = "left",
+  right = "right",
+}
+
+export type SlideType = `${SlideTypeEnum}`;
+
+const SlideComponent = Object.keys(SlideTypeEnum).reduce((dict, key) => {
+  // @ts-ignore
+  dict[key] = forwardRef(function Transition(props, ref) {
+    return <Slide direction={key} ref={ref} {...(props as any)} />;
+  });
+  return dict;
+}, {} as { [key in SlideTypeEnum]: typeof Slide });
 
 const DialogStyled = {
   Root: styled(Dialog)<DialogProps>({
-    [`&${classes.root}`]: {
-      [`& > ${classes.container}`]: {
-        [`& > ${classes.paper}`]: {
-          [`&:not(${classes.paperFullScreen})`]: {
+    [`&.${classes.root}`]: {
+      [`& > .${classes.container}`]: {
+        [`& > .${classes.paper}`]: {
+          [`&:not(.${classes.paperFullScreen})`]: {
             borderRadius: 12,
           },
           minWidth: "680px",
@@ -155,11 +173,13 @@ const DialogCommon = {
     onSubmit,
     formRef,
     Component = DialogStyled.Root,
+    slide = "down",
     ...props
   }: Omit<DialogProps, "onSubmit" | "onClose"> & {
     formRef?: Ref<unknown>;
     onSubmit?: FormEventHandler<HTMLFormElement>;
     Component?: typeof DialogStyled.Root | ComponentType<any>;
+    slide?: SlideType;
   }) {
     const formProps = useMemo(() => {
       if (component !== "form") return { component };
@@ -171,8 +191,25 @@ const DialogCommon = {
         onSubmit,
       } as unknown as Partial<DialogProps>;
     }, [component, formRef, onSubmit]);
+
+    const isSmallScreenOrSmaller = useMediaQuery((theme: Theme) =>
+      theme?.breakpoints?.down?.("sm")
+    );
+    const fullScreen = useMemo(() => {
+      if (!!props?.fullScreen) return true;
+      if (isSmallScreenOrSmaller) return true;
+      return false;
+    }, [props?.fullScreen, isSmallScreenOrSmaller]);
+
     return (
-      <Component keepMounted={false} scroll="paper" {...props} {...formProps}>
+      <Component
+        keepMounted={false}
+        scroll="paper"
+        TransitionComponent={SlideComponent[slide]}
+        {...props}
+        {...formProps}
+        fullScreen={fullScreen}
+      >
         <Loading />
         {children}
       </Component>
@@ -240,26 +277,19 @@ const DialogCommon = {
   },
 };
 export default DialogCommon;
+
 export type DialogCommonProviderProps = Parameters<
   typeof DialogCommon.Provider
 >[0];
+
 export type DialogCommonProps = Parameters<typeof DialogCommon.Paper>[0];
+
 export type DialogCommonTitleProps = Parameters<typeof DialogCommon.Title>[0];
+
 export type DialogCommonContentProps = Parameters<
   typeof DialogCommon.Content
 >[0];
+
 export type DialogCommonActionsProps = Parameters<
   typeof DialogCommon.Actions
 >[0];
-
-// function SomeForm() {
-//   return (
-//     <DialogCommon.Provider>
-//       <DialogCommon.Paper open>
-//         <DialogCommon.Title></DialogCommon.Title>
-//         <DialogCommon.Content></DialogCommon.Content>
-//         <DialogCommon.Actions></DialogCommon.Actions>
-//       </DialogCommon.Paper>
-//     </DialogCommon.Provider>
-//   );
-// }

@@ -13,7 +13,7 @@ export type WithRequiredMarkProps = {
   spaces?: number;
 };
 
-export function WithRequiredMark({
+export default function WithRequiredMark({
   children,
   required,
   mark = "*",

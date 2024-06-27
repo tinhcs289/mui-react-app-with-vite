@@ -5,21 +5,23 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import type { Moment } from "moment";
 import moment from "moment";
-import "moment/locale/en-gb";
-import "moment/locale/vi";
+import "./moment-locale-en";
+import "./moment-locale-vi";
 
 export type DateTimeProviderProps = Omit<
   LocalizationProviderProps<Moment, string>,
-  "dateAdapter" | "moment" | "locale"
+  "dateAdapter" | "adapterLocale"
 >;
 
 const locale = DATETIME_LOCALE[i18nLanguage.get() || LANGUAGE_DEFAULT];
 
 moment.locale(locale);
-console.log("Moment initialized");
+console.log(`Moment initialized: ${locale}`);
 
-export default function DateTimeProvider(props: DateTimeProviderProps) {
-  const { children, ...otherProps } = props;
+export default function DateTimeProvider({
+  children,
+  ...otherProps
+}: DateTimeProviderProps) {
   return (
     <LocalizationProvider
       {...otherProps}
@@ -30,3 +32,5 @@ export default function DateTimeProvider(props: DateTimeProviderProps) {
     </LocalizationProvider>
   );
 }
+
+window["moment"] = moment;

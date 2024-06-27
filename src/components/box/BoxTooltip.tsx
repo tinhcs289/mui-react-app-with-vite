@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { alpha, styled } from "@mui/material";
 import type { BoxProps } from "@mui/material/Box";
 import Box from "@mui/material/Box";
 import type { TooltipProps } from "@mui/material/Tooltip";
@@ -13,9 +13,9 @@ const DefaultTooltip = styled(function HtmlTooltipStyled({
   return <Tooltip {...props} classes={{ popper: className }} />;
 })(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    padding: 0,
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
+    padding: theme.spacing(1),
+    backgroundColor: alpha(theme.palette.grey[900], 0.8),
+    color: theme.palette.common.white,
     width: "max-content",
     minWidth: "fit-content",
     fontSize: theme.typography.pxToRem(12),
@@ -34,20 +34,25 @@ const BoxWrap = forwardRef(function BoxForwardRef(
   );
 });
 
-export type BoxTooltipProps = BoxProps & {
+export type BoxTooltipProps = Omit<BoxProps, "title"> & {
   innerRef?: Ref<unknown>;
   TooltipComponent?: typeof DefaultTooltip | ComponentType<any>;
+  title?: TooltipProps["title"];
   tooltipProps?: Partial<TooltipProps>;
 };
 
 export default function BoxTooltip({
   children,
   tooltipProps,
+  title,
   TooltipComponent = DefaultTooltip,
   ...others
 }: BoxTooltipProps) {
   return (
-    <TooltipComponent {...tooltipProps} title={tooltipProps?.title || ""}>
+    <TooltipComponent
+      {...tooltipProps}
+      title={title || tooltipProps?.title || ""}
+    >
       <BoxWrap {...others}>{children}</BoxWrap>
     </TooltipComponent>
   );

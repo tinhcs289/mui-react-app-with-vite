@@ -1,16 +1,22 @@
-import { ButtonPositive } from "@/components/buttons/ButtonPositive";
+import ButtonPositive from "@/components/buttons/ButtonPositive";
 import PATHS from "@/constants/paths";
-import { MainLayoutPageContainer } from "@/layouts/MainLayout";
+import wait from "@/helpers/async-helpers/wait";
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import { lazy } from "react";
 import { NavLink } from "react-router-dom";
-import DevelopBackground from "./components/DevelopBackground";
-import type { PageProps } from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function Page(_props: PageProps) {
+const DevelopBackground = lazy(() =>
+  wait().then(() => import("@/components/svg/DevelopBackground"))
+);
+
+const PageContainer = lazy(() =>
+  wait().then(() => import("@/layouts/MainLayout/PageContainer"))
+);
+
+export default function Page() {
   return (
-    <MainLayoutPageContainer>
+    <PageContainer>
       <Grid container sx={{ p: 2 }}>
         <Grid item xs={12} container justifyContent="center" my="24px">
           <Typography variant="h4">{`Chức năng đang trong quá trình phát triển`}</Typography>
@@ -33,6 +39,6 @@ export default function Page(_props: PageProps) {
           <DevelopBackground />
         </Grid>
       </Grid>
-    </MainLayoutPageContainer>
+    </PageContainer>
   );
 }

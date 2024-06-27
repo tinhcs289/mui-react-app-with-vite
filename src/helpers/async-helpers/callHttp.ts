@@ -19,7 +19,7 @@ export type CallHttpReturns<ResponseDataType> =
   | CallHttpReturnsSuccess<ResponseDataType>
   | CallHttpReturnsError<ResponseDataType>;
 /**
- * An elegant way to do async/await api call
+ * An elegant way to do async/await api call with axios
  * @example 
    // call api then take manual validate the response
    const [error, result] = await callHttp(getUsers(payload)).wait(r => r?.status === 200 && r?.data?.result?.lenght > 0);

@@ -1,8 +1,6 @@
-import MainLayout, { MainLayoutPageContainer } from "./MainLayout";
+import MainLayout from "./MainLayout";
 
 export default MainLayout;
-
-export { MainLayoutPageContainer };
 
 export {
   useBreadcrumb,
@@ -12,5 +10,3 @@ export {
 } from "./context";
 
 export type { LayoutStates } from "./context";
-
-export type { MenuItemData, MenuItemType } from "./types";

@@ -1,7 +1,7 @@
 import type { ComponentType, Ref } from "react";
 import { forwardRef } from "react";
 import type { TypographyCommonProps } from "./TypographyCommon";
-import { TypographyCommon } from "./TypographyCommon";
+import TypographyCommon from "./TypographyCommon";
 
 export const H1 = forwardRef(function H1ForwardRef(
   { children, ...props }: TypographyCommonProps<"h1">,

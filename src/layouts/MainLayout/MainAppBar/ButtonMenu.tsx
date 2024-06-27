@@ -1,8 +1,8 @@
+import BoxTooltip from "@/components/box/BoxTooltip";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { styled } from "@mui/material";
 import type { IconButtonProps } from "@mui/material/IconButton";
 import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import { memo, useCallback, useMemo } from "react";
 import { useGetStateMainLayout, useSetStateMainLayout } from "../context";
 
@@ -23,7 +23,7 @@ const ButtonMenu = memo(() => {
 
   const $Button = useMemo(() => {
     return (
-      <Tooltip title="Thu gọn">
+      <BoxTooltip tooltipProps={{ title: "Thu gọn" }}>
         <IconButtonStyled
           edge="start"
           color="inherit"
@@ -32,7 +32,7 @@ const ButtonMenu = memo(() => {
         >
           <MenuOpenIcon />
         </IconButtonStyled>
-      </Tooltip>
+      </BoxTooltip>
     );
   }, [toggle, isAsideOpen]);
 

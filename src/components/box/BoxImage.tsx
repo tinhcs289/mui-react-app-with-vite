@@ -16,8 +16,8 @@ const CommonImageCoverBox = styled(Box)<BoxProps>({
       top: `50%`,
       left: `50%`,
       transform: `translate(-50%, -50%)`,
-      width: "auto !important",
-      height: "auto !important",
+      // width: "auto !important",
+      // height: "auto !important",
     },
   },
 });
@@ -29,7 +29,14 @@ export type BoxImageProps = BoxProps & {
 export default function BoxImage({ imageProps, ...props }: BoxImageProps) {
   return (
     <CommonImageCoverBox {...props}>
-      <LazyLoadImage effect="blur" {...imageProps} />
+      <LazyLoadImage
+        effect="blur"
+        // @ts-ignore
+        width={props?.width ?? undefined}
+        // @ts-ignore
+        height={props?.height ?? undefined}
+        {...imageProps}
+      />
     </CommonImageCoverBox>
   );
 }
