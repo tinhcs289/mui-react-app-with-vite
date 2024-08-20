@@ -1,4 +1,5 @@
 import BoxTooltip from "@/components/box/BoxTooltip";
+import type { BoxTooltipProps } from "@/components/box/BoxTooltip";
 import arrayOrEmpty from "@/helpers/format-helpers/arrayOrEmpty";
 import stringOrEmpty from "@/helpers/format-helpers/stringOrEmpty";
 import type { MenuItemData } from "@/types";
@@ -20,6 +21,34 @@ import type { MouseEventHandler, ReactNode } from "react";
 import { memo, useCallback, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { useGetStateMainLayout, useSetStateMainLayout } from "../context";
+import { tooltipClasses } from "@mui/material/Tooltip";
+
+function AsideItemTooltip({
+  children,
+  tooltipProps,
+  ...otherProps
+}: BoxTooltipProps) {
+  return (
+    <BoxTooltip
+      {...otherProps}
+      tooltipProps={{
+        placement: "right",
+        ...tooltipProps,
+        sx: {
+          ...tooltipProps?.sx,
+          [`& .${tooltipClasses.tooltip}`]: {
+            background: (theme) => theme.palette.background.paper,
+            boxShadow: (theme) => theme.shadows[10],
+            // @ts-ignore
+            ...tooltipProps?.sx?.[`& .${tooltipClasses.tooltip}`],
+          },
+        },
+      }}
+    >
+      {children}
+    </BoxTooltip>
+  );
+}
 
 const ListItemButtonStyled = styled(ListItemButton)<ListItemButtonProps>(
   ({ theme }) => ({
@@ -218,11 +247,10 @@ const AsideMenuList = memo(() => {
                 depth={0}
               />
             ) : (
-              <BoxTooltip
+              <AsideItemTooltip
                 key={item.id}
                 tooltipProps={{
                   title: item.labelText,
-                  placement: "right",
                 }}
               >
                 <MenuItem
@@ -231,7 +259,7 @@ const AsideMenuList = memo(() => {
                   active={!!item.active}
                   depth={0}
                 />
-              </BoxTooltip>
+              </AsideItemTooltip>
             );
           } else {
             const childActive = isChildActive(item);
@@ -268,7 +296,7 @@ const AsideMenuList = memo(() => {
                 </Collapse>
               </MenuItem>
             ) : (
-              <BoxTooltip
+              <AsideItemTooltip
                 key={item.id}
                 tooltipProps={{
                   placement: "right-start",
@@ -306,7 +334,7 @@ const AsideMenuList = memo(() => {
                   active={!!item.active}
                   depth={0}
                 />
-              </BoxTooltip>
+              </AsideItemTooltip>
             );
           }
         })}

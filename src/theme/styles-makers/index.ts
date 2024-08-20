@@ -10,6 +10,9 @@ import { pageStyleMaker } from "./style.maker-page";
 const ID = "main-layout-root";
 
 const globalStyleMaker: Required<GlobalStylesProps>["styles"] = (theme) => ({
+  ":root": {
+    colorScheme: `only ${theme.palette.mode}`,
+  },
   "*": scrollbarStyleMaker(theme),
   [`#${ID}.${boxClasses.root}`]: {
     [`& > .${appBarClasses.root}`]: appbarStyleMaker(theme),
