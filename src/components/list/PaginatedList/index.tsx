@@ -1,3 +1,5 @@
+"use client";
+
 import type {
   UseAction,
   UseGetState,
@@ -5,6 +7,7 @@ import type {
   UseSetState,
 } from "@/helpers/react-context-helpers/createStatesContext";
 import createStatesContext from "@/helpers/react-context-helpers/createStatesContext";
+import newGuid from "@/helpers/string-helpers/newGuid";
 import cloneDeep from "lodash/cloneDeep";
 import get from "lodash/get";
 import omit from "lodash/omit";
@@ -12,6 +15,7 @@ import unionBy from "lodash/unionBy";
 import type { ReactNode } from "react";
 import { memo, useCallback, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
+import type { QueryObserverOptions } from "react-query";
 
 type AnyObject = { [x: string]: any };
 
@@ -90,6 +94,7 @@ type PaginatedListStates<
   defaultFilter?: ListFilter<Filter>;
   fixedFilter?: ListFilter<Filter>;
   advanceFilter?: ListFilter<Filter>;
+  parametersHash?: string;
   sortBy?: SortOperator[];
   selectable?: boolean;
   requestState?: "none" | "fetching" | "success" | "fail";
@@ -105,6 +110,7 @@ type PaginatedListStates<
   //
   checkAllItems?: (checked: boolean) => void;
   checkOrUnCheckItem?: (item: Item) => void;
+  isSelected?: (item: Item) => boolean;
   setInteraction?: (interaction: Interaction<Item>) => void;
   clearInteraction?: () => void;
   refresh?: () => void;
@@ -534,6 +540,23 @@ const SelectionInitializer = memo(() => {
     when: "whenever-value-changes",
   });
 
+  const isSelectedRow = useCallback(
+    (item: AnyObject[]) => {
+      if (!item) return false;
+      const id = getId(item);
+      if (typeof id === "undefined") return false;
+      if (id === "") return false;
+
+      if (!selectedItems?.length) return false;
+      return selectedItems.findIndex((i) => getId(i) === id) !== -1;
+    },
+    [selectedItems, getId]
+  );
+
+  useInitState("isSelected", isSelectedRow, {
+    when: "whenever-value-changes",
+  });
+
   return null;
 });
 
@@ -656,9 +679,7 @@ type ReactQueryInitializerProps<
   queryFn: GetPaginatedList<Item, Filter>;
   fetchDataOnFirstMount?: boolean;
   infinite?: boolean;
-  queryOptions?: Partial<
-    Omit<Parameters<typeof useQuery>[0], "queryFn" | "queryKey" | "enabled">
-  >;
+  queryOptions?: Partial<QueryObserverOptions<GetPaginatedListReturns<Item>>>;
 };
 
 const ReactQueryInitializer = memo(
@@ -678,26 +699,35 @@ const ReactQueryInitializer = memo(
     const defaultFilter = useGetState((s) => s?.defaultFilter);
     const fixedFilter = useGetState((s) => s?.fixedFilter);
     const initialized = useGetState((s) => s?.initialized);
+    const parametersHash = useGetState((s) => s?.parametersHash);
 
-    const { data, isSuccess, isLoading, isError, isFetching, isFetched } =
-      useQuery({
-        queryKey: [
-          queryKey as string,
+    const {
+      data,
+      isSuccess,
+      isLoading,
+      isError,
+      isFetching,
+      isFetched,
+      refetch,
+    } = useQuery({
+      queryKey: [
+        queryKey as string,
+        pageIndex,
+        pageSize,
+        sortBy,
+        advanceFilter,
+        parametersHash,
+      ],
+      queryFn: () =>
+        queryFn({
           pageIndex,
           pageSize,
           sortBy,
           advanceFilter,
-        ],
-        queryFn: () =>
-          queryFn({
-            pageIndex,
-            pageSize,
-            sortBy,
-            advanceFilter,
-          }),
-        enabled: fetchDataOnFirstMount,
-        ...queryOptions,
-      });
+        }),
+      enabled: false,
+      ...queryOptions,
+    });
 
     useEffect(() => {
       if (initialized?.request) return;
@@ -791,18 +821,64 @@ const ReactQueryInitializer = memo(
         const args = getQueryArgs(payload, options);
         setState((states) => ({
           ...states,
+          parametersHash: newGuid(),
           pageIndex: args.pageIndex,
           pageSize: args.pageSize,
           sortBy: args.sortBy,
           advanceFilter: args.advanceFilter,
         }));
+
+        setTimeout(() => {
+          refetch();
+        });
       },
-      [getQueryArgs, setState]
+      [getQueryArgs, setState, refetch]
     );
 
     useInitState("fetchData", fetchData, {
       when: "whenever-value-changes",
     });
+
+    useEffect(
+      function fetchDataOnMount() {
+        if (!fetchDataOnFirstMount) return;
+        if (initialized?.request) return;
+        if (!initialized?.states) return;
+
+        const fetchOnMount = () => {
+          fetchData();
+        };
+
+        fetchOnMount();
+
+        setState((states) => ({
+          ...states,
+          initialized: { ...states?.initialized, request: true },
+        }));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [fetchDataOnFirstMount, initialized]
+    );
+
+    useEffect(
+      function setupRefetchInterval() {
+        if (!queryOptions?.refetchInterval) return;
+
+        const retriveData = async () => {
+          await refetch();
+        };
+
+        const i = setInterval(() => {
+          retriveData();
+        }, queryOptions.refetchInterval as number);
+
+        return function cleanup() {
+          clearInterval(i);
+        };
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [queryOptions?.refetchInterval]
+    );
 
     return null;
   }
