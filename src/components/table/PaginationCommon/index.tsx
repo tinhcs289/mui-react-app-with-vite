@@ -61,6 +61,7 @@ const PaginationCommon = forwardRef<HTMLElement, PaginationCommonProps>(
         showFirstButton
         showLastButton
         color="primary"
+        shape="rounded"
         {...otherProps}
         onChange={handleChange}
         count={totalPages}
